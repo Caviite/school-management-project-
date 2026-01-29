@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - School Management Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: white;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background-color: #3599db;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .school-name h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            text-align: left;
+            border: 2px solid blue;
+            padding: 10px 15px 7px;
+            background-color: #2196f3;
+            border-radius: 10px;
+            
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .user-role {
+            font-size: 14px;
+            color: #ffffff;
+            background-color: blue;
+            padding: 2px 8px 5px;
+            border-radius: 12px;
+            border: 2px solid whitesmoke;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #a50f0f;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: #34495e;
+            padding: 0 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav ul li {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 1rem 0;
+            transition: color 0.3s;
+        }
+
+        .nav ul li:hover{
+            color: #667eea;
+            border-bottom: 3px solid #2196f3;
+        }
+
+        .nav ul li.active {
+            color: white;
+            border-bottom: 3px solid #2196f3;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            border: 1px solid #2980b9;
+            background: #656469;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 10px 10px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-info h3 {
+            font-size: 0.9rem;
+            color: #d0d0d0;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-info p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .stat-icon {
+            width: 100px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* font-size: 1.8rem; */
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background-color: #e3f2fd;
+            color: #2196f3;
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background-color: #f3e5f5;
+            color: #9c27b0;
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background-color: #e8f5e9;
+            color: #4caf50;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            border: 2px solid #d5d6d7;
+            background: rgb(255, 255, 255);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .quick-actions h2 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            /* flex-wrap: wrap; */
+        }
+
+        .action-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Recent Activities */
+        .recent-activities {
+            border: 2px solid #d5d6d7;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recent-activities h2 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .activity-table th {
+            background-color: #ecf0f1;
+            padding: 0.8rem;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .activity-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .activity-table tr:hover {
+            background-color: #b2b4b6;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Upcoming Events */
+        .upcoming-events {
+            border: 2px solid #d5d6d7;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .upcoming-events h2 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .event-item {
+            padding: 1rem;
+            border-left: 4px solid #3498db;
+            background-color: #f8f9fa;
+            margin-bottom: 0.8rem;
+            border-radius: 4px;
+        }
+
+        .event-date {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 0.3rem;
+        }
+
+        .event-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-card h2 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .chart-placeholder {
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav ul {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">
+                <img src="" alt= "Q - C - I">
+            </div>
+            <div class="school-name">
+                <h1>QUEST CODE INSTITUTE</h1>
+            </div>
+        </div>
+        <div class="user-section">
+            <div class="user-info">
+                <div class="user-name">David</div>
+                <div class="user-role">Administrator</div>
+            </div>
+            <button class="logout-btn" onclick="logOut()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <ul>
+            <li class="active">Dashboard</li>
+            <li onclick="studentPage()">Students</li>
+            <li onclick="teacherPage()">Teachers</li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Students</h3>
+                    <p>169</p>
+                </div>
+                <div>
+                    <img class="stat-icon" src="../meadia/Should Everyone Learn To Code_ 15 Tech Pros Weigh In On Why Or Why Not.jpg" alt="">
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Teachers</h3>
+                    <p>87</p>
+                </div>
+                <div>
+                    <img  class="stat-icon" src="https://i.pinimg.com/1200x/b6/86/f2/b686f22115da8ef636b2c6a8d96a946e.jpg" alt="">
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Cohort</h3>
+                    <p>3</p>
+                </div>
+                <div>
+                    <img  class="stat-icon" src="https://i.pinimg.com/1200x/94/33/c3/9433c3aeac6c78cada7e39bf5635891e.jpg" alt="">
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="studentPage()">➕ Add New Student</button>
+                <button class="action-btn" onclick="newTeacher()">➕ Add New Teacher</button>
+            </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="two-column">
+            <!-- Recent Activities -->
+            <div class="recent-activities">
+                <h2>Recent Activities</h2>
+                <table class="activity-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dec 27, 2025</td>
+                            <td>John Smith</td>
+                            <td>New student enrolled</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dec 27, 2025</td>
+                            <td>Sarah Johnson</td>
+                            <td>Teacher profile updated</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dec 26, 2025</td>
+                            <td>Michael Brown</td>
+                            <td>Class schedule changed</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dec 26, 2025</td>
+                            <td>Emily Davis</td>
+                            <td>Grade submission</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dec 25, 2025</td>
+                            <td>David Wilson</td>
+                            <td>Parent meeting scheduled</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="upcoming-events">
+                <h2>Upcoming Events</h2>
+                <div class="event-item">
+                    <div class="event-date">Jan 5, 2025</div>
+                    <div class="event-title">Parent-Teacher Meeting</div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">Jan 15, 2025</div>
+                    <div class="event-title">Mid-Term Examinations</div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">Jan 22, 2025</div>
+                    <div class="event-title">Sports Day</div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">Feb 1, 2025</div>
+                    <div class="event-title">School Anniversary</div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">Feb 10, 2025</div>
+                    <div class="event-title">Winter Break Begins</div>
+                </div>
+            </div>
+        </div>
+
+        <script src="index.js"></script>
+</body>
+
+</html>

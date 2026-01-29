@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Code Portal - Create Account</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 700px;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #095199;
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .logo p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+
+
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* media queries */
+        /* Tablets (≤ 768px) */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+                height: auto;
+            }
+
+            .login-container {
+                padding: 30px;
+                max-width: 100%;
+                border-radius: 16px;
+            }
+
+            .logo h1 {
+                font-size: 24px;
+            }
+
+            .role-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Mobile phones (≤ 480px) */
+        @media (max-width: 480px) {
+            body {
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .login-container {
+                padding: 20px;
+                border-radius: 14px;
+            }
+
+            .logo h1 {
+                font-size: 20px;
+            }
+
+            .logo p {
+                font-size: 12px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .form-group input,
+            .form-group select {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+
+            .role-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-login {
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            .demo-credentials {
+                font-size: 11px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1><i class="fas fa-school"></i> Quest Code Institute</h1>
+            <p>Quest Code Management Portal</p>
+        </div>
+
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="username" placeholder="Input your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" placeholder="create a password" required>
+            </div>
+
+
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Create Account
+            </button>
+        </form>
+
+        <div class="demo-credentials">
+            <strong>Demo Credentials:</strong><br>
+            KINDLY USE YOUR CREATED CREDENTIALS TO LOGIN<br>
+        </div>
+
+    </div>
+
+    <script type="module">
+
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getFirestore, collection } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBdcNFIemH0tXrzP_aiWHH0VU6_iO9lyPU",
+            authDomain: "school-portal-d5e27.firebaseapp.com",
+            projectId: "school-portal-d5e27",
+            storageBucket: "school-portal-d5e27.firebasestorage.app",
+            messagingSenderId: "143660580304",
+            appId: "1:143660580304:web:011043bf8b008ae1954dd5"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth()
+        const colRef = collection(db, 'portal');
+
+
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Simple validation
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+                if (userCredential.user) {
+                    swal.fire(
+                        'Account Created!',
+                        'Your account has been successfully created.',
+                        'success'
+                    ).then(() => {
+                        // Redirect to login page after account creation
+                        window.location.href = "../login/index.html";
+                    });
+                }
+
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    Swal.fire(
+                        'Error!',
+                        'The email address is already in use by another account.',
+                        'error'
+                    );
+                } else if (error.code === 'auth/invalid-email') {
+                    Swal.fire(
+                        'Error!',
+                        'The email address is not valid.',
+                        'error'
+                    );
+                } else if (error.code === 'auth/weak-password') {
+                    Swal.fire(
+                        'Note!',
+                        '( password should be at least 6 characters,including letters and numbers )',
+                        'info'
+                    );
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        error.message,
+                        'error'
+                    );
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

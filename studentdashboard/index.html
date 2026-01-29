@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Q-C-I Management - School Portal</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Student Management - CodeAcademy</title>
+        <link rel="stylesheet" href="index.css">
+    </head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <div class="school-name">
+                <h1>Student Management</h1>
+            </div>
+        </div>
+        <div class="header-stats">
+
+            <div class="header-stat">
+                <div class="header-stat-value">169</div>
+                <div class="header-stat-label">Total Student</div>
+            </div>
+
+            <div class="header-stat">
+                <div class="header-stat-value">152</div>
+                <div class="header-stat-label">Active Students</div>
+            </div>
+
+            <div class="header-stat">
+                <div class="header-stat-value">17</div>
+                <div class="header-stat-label">In-Active Students</div>
+            </div>
+
+            <div class="header-stat">
+                <div class="header-stat-value">3</div>
+                <div class="header-stat-label">Cohorts</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <ul>
+            <li onclick="dashBord()">Dashboard</li>
+            <li class="active">Students</li>
+            <li onclick="teacherPage()">Teachers</li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div>
+                    <img class="stat-card-icon" src="../meadia/A Complete Guide To Full Stack Development.jpg"
+                        alt="Full stack Development">
+                </div>
+                <div class="stat-card-value">50</div>
+                <div class="stat-card-label">Full Stack Students</div>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <img class="stat-card-icon" src="../meadia/Everything you need to know about Data Analytics.jpg"
+                        alt="Data Science">
+                </div>
+                <div class="stat-card-value">48</div>
+                <div class="stat-card-label">Data Science</div>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <img class="stat-card-icon"
+                        src="../meadia/Mastering Feature Flags with Unleash_ A Game-Changer for App Development.jpg"
+                        alt="Mobile Development">
+                </div>
+                <div class="stat-card-value">43</div>
+                <div class="stat-card-label">Mobile Development</div>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <img class="stat-card-icon" 8 src="../meadia/download.jpg" alt="DevOps Engineering">
+                </div>
+                <div class="stat-card-value">28</div>
+                <div class="stat-card-label">Dev-ops Engineering</div>
+            </div>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="search-filter">
+            <div class="search-bar">
+                <input oninput="searchStudent()" type="text" class="search-input"
+                    placeholder="🔍 Search by name, Cohort, Program...">
+                <button class="btn">Search</button>
+            </div>
+            <div class="filter-group">
+                <select class="filter-select">
+                    <option>All Programs</option>
+                    <option>Full Stack Web Development</option>
+                    <option>Data Science</option>
+                    <option>Mobile Development</option>
+                    <option>DevOps Engineering</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Cohorts</option>
+                    <option>January-Cohort</option>
+                    <option>February Cohort</option>
+                    <option>March Cohort</option>
+                </select>
+                <select class="filter-select">
+                    <option>All Status</option>
+                    <option>Active</option>
+                    <option>inactive</option>
+                </select>
+                <button onclick="clearFilters()" class="btn btn-secondary">Clear Filters</button>
+                <button class="btn" onclick="addStudents()">+ Add Student</button>
+            </div>
+        </div>
+
+        <div id="main" class="main-add">
+            <button onclick="removeSec()">❌</button>
+
+            <form class="add-student" id="newStudentInfo" onsubmit="formDetail(event)">
+                <h1 style="color: #0099ff;"> QUEST CODE INSTITUTE</h1>
+                <h2>Add Student</h2>
+                <input type="text" id="name" placeholder="Student" required>
+                <input type="text" id="cohort" placeholder="Cohort" required>
+                <input type="text" id="program" placeholder="Program" required>
+                <input type="text" id="status" placeholder="Status" required>
+                <button type="submit" class="btn btn-secondary" style="margin-top: 20px; width: 100%;">
+                    Submit
+                </button>
+            </form>
+        </div>
+
+
+        <!-- Students Grid -->
+        <table id="table-me" class="student-roll">
+            <thead>
+                <th>Name</th>
+                <th>Cohort</th>
+                <th>Program</th>
+                <th>Status</th>
+                <th>Delete</th>
+            </thead>
+            <tbody id="table-roll">
+                <tr>
+                    <!-- <td></td> -->
+                </tr>
+            </tbody>
+        </table>
+
+        <script src="index.js"></script>
+</body>
+
+</html>

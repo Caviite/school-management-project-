@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Management - School Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .teacher-count {
+            font-size: 0.9rem;
+            color: #c185d8;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: #34495e;
+            padding: 0 2rem;
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav ul li {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 1rem 0;
+            transition: color 0.3s;
+        }
+
+        .nav ul li:hover,
+        .nav ul li.active {
+            color: #be82d6;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Quick Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* Search and Filter Section */
+        .search-filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.8rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #9b59b6;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.8rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            min-width: 150px;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #9b59b6;
+        }
+
+        .results-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .results-count {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .main-add {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .main-add>button {
+            position: absolute;
+            top: 420px;
+            right: 400px;
+            border: none;
+            font-size: 20px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .add-student {
+            background-color: #b6b3b3;
+            border: #8b8999 solid;
+            border-radius: 1rem;
+            width: 40%;
+            padding: 20px 20px 30px;
+            margin-top: 20px;
+        }
+
+        .add-student>input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f9fbff;
+            /* color: #333; */
+        }
+
+        .add-student select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+
+            font-size: 15px;
+            color: #757575;
+
+            background-color: #f9fbff;
+            /* border: 2px solid #d0e6ff; */
+            border-radius: 8px;
+
+            cursor: pointer;
+            outline: none;
+
+            transition: all 0.3s ease;
+        }
+
+        .add-student select option {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .add-student>h1 {
+            color: #0099ff;
+            text-align: center;
+            margin-bottom: 10px;
+
+        }
+
+        .add-student>h2 {
+            color: #d8e3eb;
+            text-align: center;
+        }
+
+        /* Teacher Cards Grid */
+        .teacher-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .teacher-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            margin-top: 30px;
+
+        }
+
+        .teacher-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #9b59b6, #e74c3c);
+        }
+
+        .teacher-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .teacher-header {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .teacher-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .teacher-id {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-subject {
+            display: inline-block;
+            color: #374151;
+        }
+
+        .teacher-subject strong {
+            color: #111827;
+            font-weight: 600;
+        }
+
+
+        .detail-label {
+            font-size: 0.95rem;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+
+
+        p {
+            font-size: 0.95rem;
+            color: #374151;
+            margin: 0.25rem 0;
+            margin-bottom: 0.9rem;
+
+        }
+
+        p strong {
+            color: #111827;
+            font-weight: 600;
+
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 9px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        /* Status variations */
+        .status.active {
+            background-color: #d4d5dd;
+            color: #1374c4;
+            padding: 9px;
+        }
+
+        /* Medium devices (tablets, 768px - 1024px) */
+        @media (max-width: 1024px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .header-left h1 {
+                font-size: 1.3rem;
+            }
+
+            .header-right {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .nav ul {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            .teacher-cards {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+
+            .search-bar,
+            .filter-group {
+                flex-direction: column;
+            }
+
+            .search-input,
+            .filter-select {
+                width: 100%;
+            }
+
+            .stat-card p {
+                font-size: 1.5rem;
+            }
+
+            /* Main Add Button Adjustments */
+            .main-add {
+            
+                /* flex-direction: column; */
+                /* stack button and form */
+                /* align-items: flex-end; */
+                gap: 0.5rem;
+            }
+
+            .add-student {
+                width: 60%;
+            }
+
+            .main-add>button {
+                position: relative;
+                margin-bottom: 10px;
+                top: -300px;
+                right: 40px;
+                align-items: flex-end;
+            }
+        }
+
+        /* Small devices (mobile, <768px) */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.8rem 1rem;
+            }
+
+            .header-left h1 {
+                font-size: 1.1rem;
+            }
+
+            .nav {
+                padding: 0 1rem;
+            }
+
+            .nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .teacher-cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-card p {
+                font-size: 1.3rem;
+            }
+
+            .add-student {
+                width: 90%;
+                padding: 15px 15px 25px;
+            }
+
+            /* Main Add Button Adjustments */
+            .main-add {
+                /* flex-direction: column; */
+                align-items: center;
+                /* center the button above form */
+                gap: 1rem;
+            }
+
+            .main-add>button {
+                /* width: 50%; */
+                font-size: 18px;
+                margin-bottom: 15px;
+                position: relative;
+                top: -200;
+                right: 20px;
+                align-items: flex-end;
+            }
+        }
+
+        /* Extra small devices (phones in portrait, <480px) */
+        @media (max-width: 480px) {
+            .header-right {
+                justify-content: right;
+            }
+
+            .search-bar,
+            .filter-group {
+                gap: 0.5rem;
+            }
+
+            .search-input,
+            .filter-select {
+                font-size: 0.9rem;
+            }
+
+            /* Main Add Button Adjustments */
+            .main-add {
+                /* flex-direction: column; */
+                align-items: center;
+                gap: 1px;
+            }
+
+            .main-add>button {
+                /* width: 60%; */
+                top: -350px;
+                font-size: 16px;
+                margin-bottom: 10px;
+                /* left: ; */
+            }
+
+            .teacher-card {
+                padding: 1.2rem;
+            }
+
+            .teacher-name {
+                font-size: 1.1rem;
+            }
+
+            .teacher-id,
+            .teacher-subject,
+            .status {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1>Teacher Management</h1>
+            <div class="teacher-count">Total Teachers: 8</div>
+        </div>
+        <div class="header-right">
+            <button onclick="addTeacher()" class="btn btn-primary">➕ Add New Teacher</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <ul>
+            <li onclick="dashBord()">Dashboard</li>
+            <li onclick="studentPage()">Students</li>
+            <li class="active">Teachers</li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Search and Filter Section -->
+        <div class="search-filter-section">
+            <div class="search-bar">
+                <input oninput="searchTeacher()" type="text" class="search-input"
+                    placeholder="🔍 Search by name, teacher ID, or subject...">
+            </div>
+            <div class="filter-group">
+                <select class="filter-select" id="programFilter">
+                    <option value="">All Programs</option>
+                    <option value="full stack web development">Full Stack Web Development</option>
+                    <option value="data science">Data Science</option>
+                    <option value="mobile development">Mobile Development</option>
+                    <option value="devops engineering">DevOps Engineering</option>
+                </select>
+
+                <select class="filter-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+
+                <select class="filter-select" id="cohortFilter">
+                    <option value="">All Cohorts</option>
+                    <option value="january-cohort">January-Cohort</option>
+                    <option value="february-cohort">February-Cohort</option>
+                    <option value="march-cohort">March-Cohort</option>
+                </select>
+
+                <button onclick="clearFilters()" class="btn btn-secondary">Clear Filters</button>
+            </div>
+            <div class="results-info">
+                <div class="results-count">Showing 8 of 8 teachers</div>
+            </div>
+        </div>
+
+        <div id="main" class="main-add">
+
+            <button onclick="removeSec()">❌</button>
+
+            <form class="add-student" id="newStudentInfo" onsubmit="formDetail(); return false;">
+
+                <h1 style="color: #0099ff;">QUEST CODE INSTITUTE</h1>
+                <h2>Add Teacher</h2>
+
+                <!-- Name -->
+                <input type="text" id="name" placeholder="Name" required>
+
+                <!-- ID -->
+                <input type="text" id="identity" placeholder="ID  (e.g., TCH001)" required>
+
+                <!-- Course -->
+                <select id="course" required>
+                    <option value="">Select Course</option>
+                    <option value="full stack web development">Full Stack Web Development</option>
+                    <option value="data science">Data Science</option>
+                    <option value="mobile development">Mobile Development</option>
+                    <option value="devops engineering">DevOps Engineering</option>
+                </select>
+
+                <!-- Cohort -->
+                <select id="cohort" required>
+                    <option value="">Select Cohort</option>
+                    <option value="january-cohort">January-Cohort</option>
+                    <option value="february-cohort">February-Cohort</option>
+                    <option value="march-cohort">March-Cohort</option>
+                </select>
+
+                <!-- Experience -->
+                <input type="number" id="experience" placeholder="Experience (years)" required>
+
+                <!-- Email -->
+                <input type="email" id="email" placeholder="youremail@gmail.com" required>
+
+                <!-- Phone -->
+                <input type="tel" id="phone" placeholder="Phone No." required>
+
+                <!-- Status -->
+                <select id="status" required>
+                    <option value="">Select Status</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+
+                <button type="submit" class="btn btn-secondary" style="margin-top: 20px; width: 100%;">
+                    Submit
+                </button>
+
+            </form>
+        </div>
+
+
+
+        <!-- Teacher Cards -->
+        <div id="teacherInfo" class="teacher-cards">
+
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

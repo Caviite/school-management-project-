@@ -1,27 +1,27 @@
     
     function studentPage() {
-        window.location.href = "../studentdashboard/index.html";
+        window.location.href = "./studentdashboard";
     }
 
     function teacherPage() {
-        window.location.href = "../teacherdashboard/index.html";
+        window.location.href = "./teacherdashboard";
     }
 
     function parentPage() {
-        window.location.href = "../parentdashboard/index.html";
+        window.location.href = "./parentdashboard";
     }
 
     function classPage() {
-        window.location.href = "../classdashboard/index.html";
+        window.location.href = "./classdashboard";
     }
 
     function reportPage() {
-        window.location.href = "../reportdashboard/index.html";
+        window.location.href = "./reportdashboard";
     }
     function newTeacher() {
-        window.location.href = "../teacherdashboard/index.html";
+        window.location.href = "./teacherdashboard";
     }
 
     function createChort() {
-        window.location.href = "../chortpage/index.html";
+        window.location.href = "./chortpage";
     }

@@ -375,7 +375,7 @@
                         'Welcome Admin',
                         'success'
                     ).then(() => {
-                        window.location.href = "../admindashbord/index.html";
+                        window.location.href = "./admindashbord";
                     });
 
                     return;
@@ -384,13 +384,13 @@
                 // Other roles (teacher/student/parent) - role chosen by UI
                 switch (selectedRole) {
                     case "teacher":
-                        window.location.href = "../teacherdashboard/index.html";
+                        window.location.href = "./teacherdashboard";
                         break;
                     case "student":
-                        window.location.href = "../studentdashboard/index.html";
+                        window.location.href = "./studentdashboard";
                         break;
                     case "parent":
-                        window.location.href = "../parentdashboard/index.html";
+                        window.location.href = "./parentdashboard";
                         break;
                     default:
                         Swal.fire('Login Failed', 'Role not recognized', 'error');

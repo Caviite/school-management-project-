@@ -159,6 +159,33 @@
             display: none;
         }
 
+        .loader {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 6px solid #ddd;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+
         @media (max-width: 768px) {
             body {
                 padding: 20px;
@@ -298,6 +325,11 @@
             <strong>Demo Credentials:</strong><br>
             KINDLY USE YOUR CREATED CREDENTIALS TO LOGIN
         </div>
+
+        <div class="loader" id="loader" style="display:none;">
+            <!-- Logging in... -->
+        </div>
+
     </div>
 
     <script type="module">
@@ -334,7 +366,15 @@
             document.getElementById('selectedRoleInput').value = role;
         };
 
-        // Login function with role check
+        function showLoader() {
+            document.getElementById("loader").style.display = "block";
+        }
+
+        function hideLoader() {
+            document.getElementById("loader").style.display = "none";
+        }
+
+
         window.enterLogin = async function () {
             const email = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
@@ -344,6 +384,8 @@
                 document.getElementById('errorMessage').style.display = 'block';
                 return;
             }
+
+            showLoader();
 
             try {
                 const userCredentials = await signInWithEmailAndPassword(auth, email, password);
@@ -370,12 +412,15 @@
                         return;
                     }
 
+
+                    hideLoader();
+
                     Swal.fire(
                         'Login Successful!',
                         'Welcome Admin',
                         'success'
                     ).then(() => {
-                        window.location.href = "./admindashbord";
+                        window.location.href = "../admindashbord/index.html";
                     });
 
                     return;
@@ -384,20 +429,21 @@
                 // Other roles (teacher/student/parent) - role chosen by UI
                 switch (selectedRole) {
                     case "teacher":
-                        window.location.href = "./teacherdashboard";
+                        window.location.href = "../teacherdashboard";
                         break;
                     case "student":
-                        window.location.href = "./studentdashboard";
+                        window.location.href = "../studentdashboard";
                         break;
                     case "parent":
-                        window.location.href = "./parentdashboard";
+                        window.location.href = "../parentdashboard";
                         break;
                     default:
                         Swal.fire('Login Failed', 'Role not recognized', 'error');
                 }
 
             } catch (error) {
-                Swal.fire('Login Failed', error.message, 'error');
+                hideLoader();
+                Swal.fire('Login Failed', 'Invalid credentials or role not recognized', 'error');
             }
         };
 

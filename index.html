@@ -113,6 +113,33 @@
             color: #666;
         }
 
+
+        .loader {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 6px solid #ddd;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
         /* media queries */
         /* Tablets (≤ 768px) */
         @media (max-width: 768px) {
@@ -214,6 +241,9 @@
             KINDLY USE YOUR CREATED CREDENTIALS TO LOGIN<br>
         </div>
 
+        <div class="loader" id="loader" style="display:none;">
+
+        </div>
     </div>
 
     <script type="module">
@@ -238,12 +268,21 @@
         const auth = getAuth()
         const colRef = collection(db, 'portal');
 
+        function showLoader() {
+            document.getElementById("loader").style.display = "block";
+        }
+
+        function hideLoader() {
+            document.getElementById("loader").style.display = "none";
+        }
 
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+
+            showLoader();
 
             try {
                 // Simple validation
@@ -260,7 +299,10 @@
                     });
                 }
 
+                hideLoader();
+
             } catch (error) {
+                hideLoader();
                 if (error.code === 'auth/email-already-in-use') {
                     Swal.fire(
                         'Error!',

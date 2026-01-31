@@ -388,8 +388,9 @@
             showLoader();
 
             try {
-                const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredentials.user;
+                // 1. Authenticate with Firebase Auth
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
                 // Special check for admin
                 if (selectedRole === "admin") {

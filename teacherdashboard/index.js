@@ -1,14 +1,14 @@
 function dashBord() {
-    window.location.href = "../admindashbord.index.html";
+    window.location.href = "../admin/index.html";
     return;
 }
 
 function studentPage() {
-    window.location.href = "../studentdashboard.index.html";
+    window.location.href = "../studentdashboard/index.html";
 }
 
 function parentPage() {
-    window.location.href = "../parentdashboard.index.html";
+    window.location.href = "../parentdashboard/index.html";
 }
 
 let teachers = [

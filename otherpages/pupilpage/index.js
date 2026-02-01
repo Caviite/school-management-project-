@@ -1,18 +1,3 @@
-function dashBord() {
-    window.location.href = "../admin/index.html";
-    return;
-}
-
-function teacherPage() {
-    window.location.href = "../teacherdashboard/index.html";
-}
-
-function parentPage() {
-    window.location.href = "../parentdashboard/index.html";
-}
-
-
-
 let students = [
     { id: 1, name: "Alex Johnson", cohort: "January-Cohort", program: "Full Stack Web Development", status: "Active", gender: "Male", dob: "1998-05-14", phone: "555-0101", address: "123 Maple St, Springfield" },
     { id: 2, name: "Sarah Martinez", cohort: "January-Cohort", program: "Full Stack Web Development", status: "Active", gender: "Female", dob: "1999-09-22", phone: "555-0102", address: "456 Oak Ave, Riverdale" },
@@ -188,164 +173,61 @@ let students = [
     { id: 169, name: "Brooks Simpson", cohort: "January-Cohort", program: "DevOps Engineering", status: "Active", gender: "Male", dob: "1999-10-10", phone: "555-0269", address: "706 Yak Dr, Coast City" }
 ];
 
-if (!localStorage.getItem("students")) {
-    localStorage.setItem("students", JSON.stringify(students));
-}
+// Assuming your array is named 'students' as provided earlier
+// And assuming we add an 'email' property to the students (since it's in your HTML)
 
-let storedStudents = JSON.parse(localStorage.getItem("students")) || [];
-students = storedStudents;
+// --- 1. THE UI UPDATE FUNCTION ---
+// 1. YOUR ARRAY (Already there)
 
-function getStudent() {
-    let studentContainer = document.getElementById('table-roll');
+// 2. THE FIND AND DISPLAY FUNCTION
+function displayStudentInfo(emailInput) {
+    const student = students.find(s => {
+        // Normalize name: "Nora Rogers" -> "norarogers"
+        const nameClean = s.name.toLowerCase().replace(/\s+/g, '');
 
-    students.forEach(pupil => {
-        studentContainer.innerHTML += `
-            <tr>
-                <td>${pupil.name}</td>
-                <td>${pupil.cohort}</td>
-                <td>${pupil.program}</td>
-                <td>${pupil.status}</td>
-                <td><button style="padding: 10px; background: #ffffffff; color: #61776dff; border-radius: 10px; border: 1px solid #506159ff;" onclick="deleteStudent(${pupil.id})">🗑️</button></td>
-                
-            </tr>
-        `;
+        // Normalize input: "nora.rogers@school.com" -> "norarogers"
+        const inputClean = emailInput.toLowerCase()
+            .split('@')[0]
+            .replace(/\./g, '')
+            .trim();
+
+        return nameClean === inputClean;
     });
-}
-getStudent();
 
-const deleteStudent = (id) => {
-    // Remove student from the array
-    students = students.filter(pupil => pupil.id !== id);
+    if (student) {
+        // Update the HTML using your CSS classes
+        document.querySelector('.hero-text h1').textContent = student.name;
+        document.querySelector('.top-bar-user span strong').textContent = emailInput;
+        document.querySelector('.hero-text p').textContent = `${student.program} • ${student.cohort}`;
+        document.querySelector('.badge-id').textContent = `ID: 2025/STU/${student.id}`;
 
-    // Update localStorage so deletion persists
-    localStorage.setItem('students', JSON.stringify(students));
+        // Update Personal Details
+        const personalValues = document.querySelectorAll('.data-card')[0].querySelectorAll('.data-row strong');
+        personalValues[0].textContent = student.dob;
+        personalValues[1].textContent = student.gender;
 
-    // Clear and reload table
-    let studentContainer = document.getElementById('table-roll');
-    studentContainer.innerHTML = '';
-    getStudent();
-}
+        // Update Contact Info
+        const contactValues = document.querySelectorAll('.data-card')[1].querySelectorAll('.data-row strong');
+        contactValues[0].textContent = emailInput;
+        contactValues[1].textContent = student.phone;
+        contactValues[2].textContent = student.address;
 
-function searchStudent() {
-    let searchTerm = document.querySelector('.search-input').value.toLowerCase();
-    let studentContainer = document.getElementById('table-roll');
-    studentContainer.innerHTML = '';
-    students.forEach(pupil => {
-        if (pupil.name.toLowerCase().includes(searchTerm) ||
-            pupil.cohort.toLowerCase().includes(searchTerm) ||
-            pupil.program.toLowerCase().includes(searchTerm)) {
-            studentContainer.innerHTML += `
-                <tr>
-                    <td>${pupil.name}</td>
-                    <td>${pupil.cohort}</td>
-                    <td>${pupil.program}</td>
-                    <td>${pupil.status}</td>
-                    <td><button onclick="deleteStudent(${pupil.id})">🗑️</button></td>
-                </tr>
-            `;
-        }
-    });
-}
-
-function addStudents() {
-    document.getElementById('main').style.display = 'block';
-    main.style.display = 'flex';
-    document.getElementById('table-me').style.display = 'none';
-};
-
-async function formDetail(event) {
-    event.preventDefault();
-
-    const name = document.getElementById('name').value;
-    const cohort = document.getElementById('cohort').value;
-    const program = document.getElementById('program').value;
-    const status = document.getElementById('status').value;
-
-    // 1. Create the Firebase Account FIRST
-    const email = name.toLowerCase().replace(/\s+/g, '') + "@school.com";
-    const password = "StudentPassword123";
-
-    try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const uid = userCredential.user.uid;
-
-        // 2. Create the student object with the UID included
-        const newStudent = {
-            id: students.length ? students[students.length - 1].id + 1 : 1,
-            name,
-            cohort,
-            program,
-            status,
-            email: email,
-            firebaseUid: uid // This links them to Firebase forever
-        };
-
-        // 3. Save to your local array
-        students.push(newStudent);
-        localStorage.setItem('students', JSON.stringify(students));
-
-        // ... rest of your code to refresh the table ...
-        alert("Student added to system and Firebase!");
-
-    } catch (error) {
-        alert("Failed to create student in Firebase: " + error.message);
+        // Update Avatar
+        document.querySelector('.hero-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=2563eb&color=fff`;
+    } else {
+        console.error("Still no match for:", emailInput);
     }
 }
 
-
-function removeSec() {
-    document.getElementById('main').style.display = 'none';
-    document.getElementById('table-me').style.display = 'inline-table';
-}
-
-const filters = document.querySelectorAll('.filter-select');
-const studentContainer = document.getElementById('table-roll');
-
-function applyFilters() {
-    const programValue = filters[0].value;
-    const cohortValue = filters[1].value;
-    const statusValue = filters[2].value;
-
-    studentContainer.innerHTML = '';
-
-    students.forEach(pupil => {
-        const matchProgram =
-            programValue === 'All Programs' || pupil.program === programValue;
-
-        const matchCohort =
-            cohortValue === 'All Cohorts' || pupil.cohort === cohortValue;
-
-        const matchStatus =
-            statusValue === 'All Status' || pupil.status === statusValue;
-
-        if (matchProgram && matchCohort && matchStatus) {
-            studentContainer.innerHTML += `
-        <tr>
-          <td>${pupil.name}</td>
-          <td>${pupil.cohort}</td>
-          <td>${pupil.program}</td>
-          <td>${pupil.status}</td>
-          <td>
-            <button style="padding: 10px; background: #ffffffff; color: black; border-radius: 10px; border: 1px solid #46504bff;" onclick="deleteStudent(${pupil.id})">
-              🗑️
-            </button>
-          </td>
-        </tr>
-      `;
-        }
-    });
-}
-
-filters.forEach(select => {
-    select.addEventListener('change', applyFilters);
+// 3. THE AUTO-START
+document.addEventListener('DOMContentLoaded', () => {
+    const emailToLookUp = localStorage.getItem('currentUserEmail');
+    if (emailToLookUp) {
+        displayStudentInfo(emailToLookUp);
+    }
 });
 
-// Initial load
-applyFilters();
-
-function clearFilters() {
-    filters.forEach(select => {
-        select.value = select.options[0].value;
-    });
-    applyFilters();
-}
+document.querySelector('.logout-minimal').addEventListener('click', () => {
+    localStorage.removeItem('currentUserEmail'); // Clear the session
+    window.location.href = "../../login/index.html"; // Go home
+});

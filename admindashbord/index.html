@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - School Management Portal</title>
     <style>
@@ -48,7 +49,7 @@
             font-weight: bold;
         }
 
-        .logo img{
+        .logo img {
             width: 120%;
             border-radius: 50%;
         }
@@ -70,7 +71,7 @@
             padding: 10px 15px 7px;
             background-color: #2196f3;
             border-radius: 10px;
-            
+
         }
 
         .user-name {
@@ -124,7 +125,7 @@
             transition: color 0.3s;
         }
 
-        .nav ul li:hover{
+        .nav ul li:hover {
             color: #667eea;
             border-bottom: 3px solid #2196f3;
         }
@@ -364,10 +365,57 @@
             font-size: 1.2rem;
         }
 
+        /* ============================================================
+   RESPONSIVE DESIGN SYSTEM
+   ============================================================ */
+
+        /* 1. Large Tablets & Small Laptops (Max 1024px) */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 95%;
+                margin: 1.5rem auto;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                /* Stacks activities above events */
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr 1fr;
+                /* Keeps charts side-by-side but slightly smaller */
+            }
+        }
+
+        /* 2. Tablets & Large Phones (Max 768px) */
         @media (max-width: 768px) {
+
+            /* Header Adjustments */
             .header {
                 flex-direction: column;
-                gap: 1rem;
+                padding: 1.5rem;
+                text-align: center;
+            }
+
+            .logo-section {
+                flex-direction: column;
+                margin-bottom: 1rem;
+            }
+
+            .user-section {
+                flex-direction: column;
+                width: 100%;
+                gap: 2rem;
+            }
+
+            .user-info {
+                width: 100%;
+                text-align: center;
+            }
+
+            /* Navigation - Stacked List */
+            .nav {
+                padding: 0;
             }
 
             .nav ul {
@@ -375,12 +423,91 @@
                 gap: 0;
             }
 
-            .two-column {
-                grid-template-columns: 1fr;
+            .nav ul li {
+                width: 100%;
+                text-align: center;
+                padding: 12px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            /* Grid Adjustments */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                /* 2x2 grid for stats */
+            }
+
+            .action-buttons {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                /* 2 buttons per row */
             }
 
             .charts-section {
                 grid-template-columns: 1fr;
+                /* Charts stack on top of each other */
+            }
+
+            /* Table Handling */
+            .recent-activities {
+                overflow-x: auto;
+                /* Adds horizontal scroll to the table only */
+            }
+
+            .activity-table {
+                min-width: 600px;
+                /* Prevents text squashing in rows */
+            }
+        }
+
+        /* 3. Small Mobile Devices (Max 480px) */
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: row;
+                /* padding: 1rem; */
+            }
+
+            .school-name h1 {
+                font-size: 1.2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                /* Single column stats */
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+                /* Single column buttons */
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .stat-info p {
+                font-size: 1.5rem;
+            }
+
+            .logout-btn {
+                width: 100%;
+            }
+        }
+
+        /* 4. Extra Large Screens (Min 1600px) */
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1500px;
+                /* Expands content for very wide monitors */
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+                /* 4 stats per row on wide screens */
             }
         }
     </style>
@@ -391,7 +518,7 @@
     <div class="header">
         <div class="logo-section">
             <div class="logo">
-                <img  src="../meadia/Gemini_Generated_Image_2f8v822f8v822f8v.png" alt= "Q - C - I">
+                <img src="../meadia/Gemini_Generated_Image_2f8v822f8v822f8v.png" alt="Q - C - I">
             </div>
             <div class="school-name">
                 <h1>QUEST CODE INSTITUTE</h1>
@@ -425,7 +552,9 @@
                     <p>169</p>
                 </div>
                 <div>
-                    <img class="stat-icon" src="../meadia/Should Everyone Learn To Code_ 15 Tech Pros Weigh In On Why Or Why Not.jpg" alt="">
+                    <img class="stat-icon"
+                        src="../meadia/Should Everyone Learn To Code_ 15 Tech Pros Weigh In On Why Or Why Not.jpg"
+                        alt="">
                 </div>
             </div>
             <div class="stat-card">
@@ -434,7 +563,8 @@
                     <p>87</p>
                 </div>
                 <div>
-                    <img  class="stat-icon" src="https://i.pinimg.com/1200x/b6/86/f2/b686f22115da8ef636b2c6a8d96a946e.jpg" alt="">
+                    <img class="stat-icon"
+                        src="https://i.pinimg.com/1200x/b6/86/f2/b686f22115da8ef636b2c6a8d96a946e.jpg" alt="">
                 </div>
             </div>
             <div class="stat-card">
@@ -443,7 +573,8 @@
                     <p>3</p>
                 </div>
                 <div>
-                    <img  class="stat-icon" src="https://i.pinimg.com/1200x/94/33/c3/9433c3aeac6c78cada7e39bf5635891e.jpg" alt="">
+                    <img class="stat-icon"
+                        src="https://i.pinimg.com/1200x/94/33/c3/9433c3aeac6c78cada7e39bf5635891e.jpg" alt="">
                 </div>
             </div>
         </div>

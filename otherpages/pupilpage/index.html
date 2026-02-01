@@ -1,11 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
-    good day
+<div class="portal-wrapper">
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <!-- <div class="logo-circle">S</div> -->
+            <span>Quest Code Portal</span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active"><a href="#">My Profile</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-viewport">
+        <header class="top-bar">
+            <h2>Student Information</h2>
+            <div class="top-bar-user">
+                <span>Welcome, <strong>John Doe</strong></span>
+                <button class="logout-minimal">Logout</button>
+            </div>
+        </header>
+
+        <div class="profile-container">
+            <section class="profile-hero">
+                <div class="hero-content">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=3498db&color=fff&size=128" alt="Student" class="hero-avatar">
+                    <div class="hero-text">
+                        <h1>John Olusegun Doe</h1>
+                        <p>Senior Secondary School • Class 3 Gold</p>
+                        <div class="badge-row">
+                            <span class="badge status-active">Active Student</span>
+                            <span class="badge-id">ID: 2025/STU/042</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="data-grid">
+                <div class="data-card">
+                    <div class="card-header"><h3>Personal Details</h3></div>
+                    <div class="card-body">
+                        <div class="data-row"><span>Date of Birth</span><strong>15 May 2008</strong></div>
+                        <div class="data-row"><span>Gender</span><strong>Male</strong></div>
+                        <div class="data-row"><span>Blood Group</span><strong>O+</strong></div>
+                        <div class="data-row"><span>Nationality</span><strong>Nigerian</strong></div>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="card-header"><h3>Contact Information</h3></div>
+                    <div class="card-body">
+                        <div class="data-row"><span>Email</span><strong>j.doe@school.com</strong></div>
+                        <div class="data-row"><span>Phone</span><strong>+234 801 000 0000</strong></div>
+                        <div class="data-row"><span>Address</span><strong>12 Victoria Island, Lagos</strong></div>
+                        <div class="data-row"><span>Guardian</span><strong>Mr. Robert Doe</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="./index.js"></script>
 </body>
+
 </html>

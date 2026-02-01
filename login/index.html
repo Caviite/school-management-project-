@@ -375,82 +375,82 @@
         }
 
 
-        window.enterLogin = async function () {
+        window.enterLogin = async () => {
             const email = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
-            const selectedRole = document.querySelector('.role-option.selected')?.dataset.role;
-
-            if (!email || !password || !selectedRole) {
-                document.getElementById('errorMessage').style.display = 'block';
-                return;
-            }
+            const selectedRole = document
+                .getElementById('selectedRoleInput')
+                .value
+                .trim()
+                .toLowerCase();
 
             showLoader();
 
+            /* -------------------------------
+               NON-ADMIN ROLES: bypass Firebase
+            ------------------------------- */
+            if (selectedRole !== 'admin') {
+                hideLoader();
+                await showSuccessAlert(selectedRole);
+
+                // --- NEW: Identify the user before leaving this page ---
+                // Assuming your login input has the ID 'login-email'
+                const userEmail = document.getElementById('username').value;
+                localStorage.setItem('currentUserEmail', userEmail);
+                // -------------------------------------------------------
+
+                const routes = {
+                    student: "../otherpages/pupilpage/index.html",
+                    teacher: "../teacherdashboard/index.html",
+                    parent: "../parentdashboard/index.html"
+                };
+
+                window.location.href = routes[selectedRole] || "index.html";
+                return;
+            }
+
+            /* -------------------------------
+               ADMIN ROLE: verify via Firebase Auth + Firestore
+            ------------------------------- */
             try {
-                // 1. Authenticate with Firebase Auth
+                // 1️⃣ Sign in with Firebase Auth
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Special check for admin
-                if (selectedRole === "admin") {
-                    console.log("ADMIN LOGIN ATTEMPT");
-                    console.log("AUTH UID:", user.uid);
+                // 2️⃣ Verify admin role from Firestore
+                const userDocRef = doc(db, "portal", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
 
-                    const userDocRef = doc(db, "portal", user.uid);
-                    const userDocSnap = await getDoc(userDocRef);
+                const roleFromDB = userDocSnap.exists()
+                    ? userDocSnap.data().role?.trim().toLowerCase()
+                    : null;
 
-                    console.log("DOC EXISTS:", userDocSnap.exists());
-                    console.log("DOC DATA:", userDocSnap.data());
-
-                    if (!userDocSnap.exists()) {
-                        Swal.fire('Login Failed', 'You are not authorized as admin', 'error');
-                        return;
-                    }
-
-                    if (userDocSnap.data().role !== "admin") {
-                        Swal.fire('Login Failed', 'You are not authorized as admin', 'error');
-                        return;
-                    }
-
-
-                    hideLoader();
-
-                    Swal.fire(
-                        'Login Successful!',
-                        'Welcome Admin',
-                        'success'
-                    ).then(() => {
-                        
-                        window.location.href = "../admindashbord.index.html";
-                    });
-
-                    return;
+                if (roleFromDB !== 'admin') {
+                    throw new Error("This account is not authorized as admin");
                 }
 
-                // Other roles (teacher/student/parent) - role chosen by UI
-                switch (selectedRole) {
-                    case "teacher":
-                        window.location.href = "../teacherdashboard.index.html";
-                        break;
-                    case "student":
-                        window.location.href = "../studentdashboard.index.html";
-                        break;
-                    case "parent":
-                        window.location.href = "../parentdashboard.index.html";
-                        break;
-                    default:
-                        Swal.fire('Login Failed', 'Role not recognized', 'error');
-                }
+                // ✅ Log admin UID and save it in sessionStorage
+                console.log("Admin UID:", user.uid);
+                sessionStorage.setItem("adminUID", user.uid);
+
+                hideLoader();
+                await showSuccessAlert('admin');
+                window.location.href = "../admin/index.html";
 
             } catch (error) {
                 hideLoader();
-                Swal.fire('Login Failed', 'Invalid credentials or role not recognized', 'error');
+                Swal.fire(
+                    'Login Failed',
+                    'Admin credentials are incorrect or unauthorized.',
+                    'error'
+                );
             }
         };
 
-
-
+        async function showSuccessAlert(role) {
+            let roleName = role.charAt(0).toUpperCase() + role.slice(1);
+            await Swal.fire('Login Successful', `Welcome to the ${roleName} Portal!`, 'success');
+        }
     </script>
 </body>
 

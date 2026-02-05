@@ -384,34 +384,16 @@
                 const data = userDoc.data();
                 const roleFromDB = (data.role || "").trim().toLowerCase();
 
-                // 3️⃣ Verify role
-                if (!roleFromDB || roleFromDB !== selectedRole) {
-                    throw new Error(`This account is not authorized as ${selectedRole}`);
-                }
-
-                // // ✅ Successful login
-                // localStorage.setItem("loggedInEmail", email);
-                // localStorage.setItem("loggedInRole", roleFromDB);
 
                 Swal.fire('Login Successful', `Welcome to the ${roleFromDB} portal!`, 'success');
 
-                // const routes = {
-                //     admin: "../admin/index.html",
-                //     teacher: "../otherpages/teachpage/index.html",
-                //     student: "../otherpages/pupilpage/index.html"
-                // };
-
-                // setTimeout(() => {
-                //     window.location.href = routes[roleFromDB];
-                // }, 1000);
-
                 if (roleFromDB == "admin") {
                     window.location.href = "../admin/index.html"
-                } else if (roleFromDB == "teacher" ){
+                } else if (roleFromDB == "teacher") {
                     window.location.href = "../../otherpages/teachpage/index.html"
-                } else if (roleFromDB == "student" ){
+                } else if (roleFromDB == "student") {
                     window.location.href = "../otherpages/pupilpage/index.html"
-                }else{
+                } else {
                     alert("faild")
                 }
 

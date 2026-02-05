@@ -3,9 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Teachers Profile</title>
+    <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
-    good day
+
+    <!-- Top Navigation -->
+    <header class="top-bar">
+        <h2 id="nav-teacher-name">Teacher</h2>
+        <button onclick="handleLogout()">Logout</button>
+    </header>
+
+    <!-- Profile Card -->
+    <main class="container">
+        <section class="profile-card">
+            <img id="view-avatar" alt="Teacher Avatar">
+
+            <h1 id="view-full-name"></h1>
+            <p id="view-subject-title" class="subject"></p>
+
+            <div class="meta">
+                <span id="view-id"></span>
+                <span id="view-status" class="status"></span>
+            </div>
+        </section>
+
+        <!-- Info Grid -->
+        <section class="info-grid">
+            <div class="info-box">
+                <h4>Cohort</h4>
+                <p id="view-cohort"></p>
+            </div>
+
+            <div class="info-box">
+                <h4>Experience</h4>
+                <p id="view-experience"></p>
+            </div>
+
+            <div class="info-box">
+                <h4>Email</h4>
+                <p id="view-email"></p>
+            </div>
+
+            <div class="info-box">
+                <h4>Phone</h4>
+                <p id="view-phone"></p>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="index.js"></script>
 </body>
 </html>

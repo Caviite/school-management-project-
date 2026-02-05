@@ -5,7 +5,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Management - School Portal</title>
+    <title>Teacher Management - Q-C-I Portal</title>
     <style>
         * {
             margin: 0;
@@ -97,6 +97,7 @@
         .nav ul li:hover,
         .nav ul li.active {
             color: #be82d6;
+            cursor: pointer;
         }
 
         /* Main Container */
@@ -543,6 +544,7 @@
             }
         }
     </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
@@ -550,7 +552,7 @@
     <div class="header">
         <div class="header-left">
             <h1>Teacher Management</h1>
-            <div class="teacher-count">Total Teachers: 8</div>
+            <!-- <div class="teacher-count">Total Teachers: 1</div> -->
         </div>
         <div class="header-right">
             <button onclick="addTeacher()" class="btn btn-primary">➕ Add New Teacher</button>
@@ -599,7 +601,7 @@
                 <button onclick="clearFilters()" class="btn btn-secondary">Clear Filters</button>
             </div>
             <div class="results-info">
-                <div class="results-count">Showing 8 of 8 teachers</div>
+                <div class="results-count">Showing 1 teacher</div>
             </div>
         </div>
 
@@ -609,7 +611,7 @@
 
             <form class="add-student" id="newStudentInfo" onsubmit="formDetail(); return false;">
 
-                <h1 style="color: #0099ff;">QUEST CODE INSTITUTE</h1>
+                <h1 style="color: #0099ff;"> <i class="fas fa-school"></i> QUEST CODE INSTITUTE</h1>
                 <h2>Add Teacher</h2>
 
                 <!-- Name -->
@@ -628,12 +630,7 @@
                 </select>
 
                 <!-- Cohort -->
-                <select id="cohort" required>
-                    <option value="">Select Cohort</option>
-                    <option value="january-cohort">January-Cohort</option>
-                    <option value="february-cohort">February-Cohort</option>
-                    <option value="march-cohort">March-Cohort</option>
-                </select>
+                <input type="number" id="cohort" value="2026">
 
                 <!-- Experience -->
                 <input type="number" id="experience" placeholder="Experience (years)" required>
@@ -666,7 +663,7 @@
         </div>
     </div>
 
-    <script src="index.js"></script>
+    <script type="module" src="index.js"></script>
 </body>
 
 </html>

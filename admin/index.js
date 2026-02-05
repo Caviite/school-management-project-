@@ -15,16 +15,5 @@
         window.location.href = "../teacherdashboard/index.html";
     }
 function logOut() {
-    swal({
-        title: "Are you sure you want to log out?",
-        text: "You will be redirected to the login page.",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    })
-    .then((willDelete) => {
-        if (willDelete) {
-            window.location.href = "../login/index.html";
-        }
-    });
+    window.location.href = "../login/index.html";
 }

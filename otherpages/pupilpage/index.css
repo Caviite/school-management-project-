@@ -31,7 +31,8 @@ body {
 /* --- Sidebar --- */
 .sidebar {
     width: var(--sidebar-width);
-    background-color: #0f172a; /* Deep Navy */
+    background-color: #0f172a;
+    /* Deep Navy */
     color: white;
     padding: 2rem 1.5rem;
     position: fixed;
@@ -196,9 +197,152 @@ body {
 }
 
 /* Responsive adjustments */
+/* --- Responsive Adjustments --- */
+
+/* For Tablets and smaller screens (Laptops/Tablets) */
+@media (max-width: 1024px) {
+    .data-grid {
+        grid-template-columns: 1fr;
+        /* Stack cards vertically */
+    }
+}
+
+/* For Mobile Devices (Phones) */
 @media (max-width: 768px) {
-    .sidebar { width: 0; display: none; }
-    .main-viewport { margin-left: 0; }
-    .hero-content { flex-direction: column; text-align: center; }
-    .data-grid { grid-template-columns: 1fr; }
+    :root {
+        --sidebar-width: 0px;
+        /* Hide sidebar space on mobile */
+    }
+
+    .portal-wrapper {
+        flex-direction: column;
+        /* Stack sidebar on top of content */
+    }
+
+    .sidebar {
+        position: relative;
+        /* Remove fixed positioning */
+        width: 100%;
+        height: auto;
+        padding: 1.5rem;
+    }
+
+    .sidebar-brand {
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .sidebar-nav ul {
+        display: flex;
+        justify-content: center;
+    }
+
+    .main-viewport {
+        margin-left: 0;
+        /* Content now takes full width */
+        padding: 1rem;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .top-bar-user {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Hero Section Mobile Polish */
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .hero-avatar {
+        width: 100px;
+        height: 100px;
+    }
+
+    .badge-row {
+        justify-content: center;
+    }
+
+    .hero-text h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Data Row Polish */
+    .data-row {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .data-row strong {
+        font-size: 1rem;
+    }
+}
+
+/* --- Extra Small Devices (Small Phones) --- */
+@media (max-width: 480px) {
+    :root {
+        --sidebar-width: 0px;
+    }
+
+    /* Reduce padding to save precious horizontal space */
+    .main-viewport {
+        padding: 0.75rem;
+    }
+
+    .profile-hero,
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* Shrink typography so it doesn't break onto 3+ lines */
+    .hero-text h1 {
+        font-size: 1.25rem;
+        line-height: 1.2;
+    }
+
+    .hero-text p {
+        font-size: 0.875rem;
+    }
+
+    /* Make badges smaller to fit side-by-side */
+    .badge-row {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .badge {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    /* Stack top bar elements more tightly */
+    .top-bar h2 {
+        font-size: 1.1rem;
+    }
+
+    .top-bar-user {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .logout-minimal {
+        width: 100%;
+        /* Full width button is easier to tap with thumbs */
+        text-align: center;
+    }
+
+    /* Ensure data rows are easy to read */
+    .data-row strong {
+        font-size: 0.9rem;
+        word-break: break-all;
+        /* Prevents long emails from breaking layout */
+    }
 }

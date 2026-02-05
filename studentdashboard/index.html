@@ -7,11 +7,12 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Q-C-I Management - School Portal</title>
+        <title>Student Management - Q-C-I</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Student Management - CodeAcademy</title>
         <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </head>
 
 <body>
@@ -22,7 +23,7 @@
                 <h1>Student Management</h1>
             </div>
         </div>
-        <div class="header-stats">
+        <!-- <div class="header-stats">
 
             <div class="header-stat">
                 <div class="header-stat-value">169</div>
@@ -43,7 +44,7 @@
                 <div class="header-stat-value">3</div>
                 <div class="header-stat-label">Cohorts</div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <!-- Navigation -->
@@ -64,15 +65,15 @@
                     <img class="stat-card-icon" src="../meadia/A Complete Guide To Full Stack Development.jpg"
                         alt="Full stack Development">
                 </div>
-                <div class="stat-card-value">50</div>
-                <div class="stat-card-label">Full Stack Students</div>
+                <div class="stat-card-value"></div>
+                <div class="stat-card-label">Full Stack Development</div>
             </div>
             <div class="stat-card">
                 <div>
                     <img class="stat-card-icon" src="../meadia/Everything you need to know about Data Analytics.jpg"
                         alt="Data Science">
                 </div>
-                <div class="stat-card-value">48</div>
+                <div class="stat-card-value"></div>
                 <div class="stat-card-label">Data Science</div>
             </div>
             <div class="stat-card">
@@ -81,14 +82,14 @@
                         src="../meadia/Mastering Feature Flags with Unleash_ A Game-Changer for App Development.jpg"
                         alt="Mobile Development">
                 </div>
-                <div class="stat-card-value">43</div>
+                <div class="stat-card-value"></div>
                 <div class="stat-card-label">Mobile Development</div>
             </div>
             <div class="stat-card">
                 <div>
                     <img class="stat-card-icon" 8 src="../meadia/download.jpg" alt="DevOps Engineering">
                 </div>
-                <div class="stat-card-value">28</div>
+                <div class="stat-card-value"></div>
                 <div class="stat-card-label">Dev-ops Engineering</div>
             </div>
         </div>
@@ -109,15 +110,8 @@
                     <option>DevOps Engineering</option>
                 </select>
                 <select class="filter-select">
-                    <option>All Cohorts</option>
-                    <option>January-Cohort</option>
-                    <option>February Cohort</option>
-                    <option>March Cohort</option>
-                </select>
-                <select class="filter-select">
-                    <option>All Status</option>
-                    <option>Active</option>
-                    <option>inactive</option>
+                    <option>cohort</option>
+                    <option>2026</option>
                 </select>
                 <button onclick="clearFilters()" class="btn btn-secondary">Clear Filters</button>
                 <button class="btn" onclick="addStudents()">+ Add Student</button>
@@ -128,26 +122,43 @@
             <button onclick="removeSec()">❌</button>
 
             <form class="add-student" id="newStudentInfo" onsubmit="formDetail(event)">
-                <h1 style="color: #0099ff;"> QUEST CODE INSTITUTE</h1>
+                <h1 style="color: #0099ff;"> <i class="fas fa-school"></i> QUEST CODE INSTITUTE</h1>
                 <h2>Add Student</h2>
-                <input type="text" id="name" placeholder="Student" required>
+
+                <!-- Email -->
+                <input type="email" id="email" placeholder="Email" required>
+
+                <!-- Cohort -->
                 <input type="text" id="cohort" placeholder="Cohort" required>
-                <input type="text" id="program" placeholder="Program" required>
-                <input type="text" id="status" placeholder="Status" required>
+
+                <!-- Program / Course -->
+                <input type="text" id="program" placeholder="Course" required>
+
+                <!-- Date of Birth -->
+                <input type="date" id="dob" required>
+
+                <!-- Phone (optional, if your create account has it) -->
+                <input type="text" id="phone" placeholder="Phone Number">
+
+                <!-- Any other field from create account, e.g., Student ID -->
+                <input type="text" id="gender" placeholder="Gender">
+                <input type="text" id="guardian" placeholder="Guardian">
+
                 <button type="submit" class="btn btn-secondary" style="margin-top: 20px; width: 100%;">
                     Submit
                 </button>
             </form>
+
         </div>
 
 
         <!-- Students Grid -->
         <table id="table-me" class="student-roll">
             <thead>
-                <th>Name</th>
+                <th>Email</th>
                 <th>Cohort</th>
-                <th>Program</th>
-                <th>Status</th>
+                <th>Course</th>
+                <th>DOB</th>
                 <th>Delete</th>
             </thead>
             <tbody id="table-roll">
@@ -157,7 +168,13 @@
             </tbody>
         </table>
 
-        <script src="index.js"></script>
+        <div id="loader" class="loader-overlay">
+            <div class="spinner"></div>
+            <p>Saving student...</p>
+        </div>
+
+
+        <script type="module" src="index.js"></script>
 </body>
 
 </html>

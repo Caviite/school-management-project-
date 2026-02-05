@@ -1,331 +1,158 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+/* Firebase config */
+const firebaseConfig = {
+    apiKey: "AIzaSyCJ3fP0NFiyJgmpxPYbR94e2c2lart4JXQ",
+    authDomain: "school-portal-aa5df.firebaseapp.com",
+    projectId: "school-portal-aa5df",
+    storageBucket: "school-portal-aa5df.firebasestorage.app",
+    messagingSenderId: "1059672065367",
+    appId: "1:1059672065367:web:5a2afaf6256a8056112a12"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 function dashBord() {
     window.location.href = "../admin/index.html";
-    return;
 }
 
 function studentPage() {
     window.location.href = "../studentdashboard/index.html";
 }
-
-function parentPage() {
-    window.location.href = "../parentdashboard/index.html";
+function teacherPage() {
+    window.location.href = "../teacherdashboard/index.html";
 }
 
-let teachers = [
-    {
-        id: "TCH001",
-        name: "Sarah Johnson",
-        subject: "Full Stack Web Development",
-        cohort: "january Cohort",
-        experience: 12,
-        email: "s.johnson@school.edu",
-        phone: "+1 (555) 234-5678",
-        status: "Active"
-    },
-    {
-        id: "TCH002",
-        name: "Michael Brown",
-        subject: "Data Science",
-        cohort: "March Cohort",
-        experience: 8,
-        email: "m.brown@school.edu",
-        phone: "+1 (555) 345-6789",
-        status: "Active"
-    },
-    {
-        id: "TCH003",
-        name: "Emily Davis",
-        subject: "Mobile Development",
-        cohort: "Febuary cohort",
-        experience: 15,
-        email: "e.davis@school.edu",
-        phone: "+1 (555) 456-7890",
-        status: "Active"
-    },
-    {
-        id: "TCH004",
-        name: "James Wilson",
-        subject: "DevOps Engineering",
-        cohort: "January cohort",
-        experience: 10,
-        email: "j.wilson@school.edu",
-        phone: "+1 (555) 567-8901",
-        status: "Active"
-    },
-    {
-        id: "TCH005",
-        name: "Lisa Martinez",
-        subject: "Mobile Development",
-        cohort: "Febuary Cohort",
-        experience: 6,
-        email: "l.martinez@school.edu",
-        phone: "+1 (555) 678-9012",
-        status: "Active"
-    },
-    {
-        id: "TCH006",
-        name: "David Thompson",
-        subject: "DevOps Engineering",
-        cohort: "March cohort",
-        experience: 5,
-        email: "d.thompson@school.edu",
-        phone: "+1 (555) 789-0123",
-        status: "Active"
-    },
-    {
-        id: "TCH007",
-        name: "Rachel Cooper",
-        subject: "Data Science",
-        cohort: "January cohort",
-        experience: 4,
-        email: "r.cooper@school.edu",
-        phone: "+1 (555) 890-1234",
-        status: "Active"
-    }
-];
+/* Global state */
+let teachers = [];
+let searchValue = "";
 
-if (!localStorage.getItem("teachers")) {
-    localStorage.setItem("teachers", JSON.stringify(teachers));
-}
+/* DOM refs */
+const teacherContainer = document.getElementById("teacherInfo");
+const programFilter = document.getElementById("programFilter");
+const statusFilter = document.getElementById("statusFilter");
+const cohortFilter = document.getElementById("cohortFilter");
 
-let storedTeachers = JSON.parse(localStorage.getItem("teachers")) || [];
-teachers = storedTeachers;
+/* Normalize helper */
+const normalize = v => (v || "").toLowerCase().trim();
 
+/* 🔥 LOAD TEACHERS FROM FIRESTORE */
+async function loadTeachers() {
+    teacherContainer.innerHTML = "";
+    teachers = [];
 
-const teacherInfoDiv = document.getElementById("teacherInfo");
+    const snapshot = await getDocs(collection(db, "users"));
 
-teacherInfoDiv.innerHTML = teachers
-    .map(teacher => `
-    <div class="teacher-card">
-      <h3 class="teacher-name"> 🧑‍🏫 ${teacher.name}</h3>
+    snapshot.forEach(docSnap => {
+        const data = docSnap.data();
 
-      <p class="teacher-id">
-      <strong> 🆔 ID:</strong> ${teacher.id}
-      </p>
+        // ✅ THIS IS THE KEY LINE
+        if (data.role !== "teacher") return;
 
-      <strong> 📚 Subject: 
-      </strong><p class="teacher-subject"> ${teacher.subject}
-      </p>
-
-      <p class="detail-label">
-      <strong> 👥 Cohort:</strong> ${teacher.cohort}
-      </p>
-
-      <p><strong> ⏳ Experience:
-      </strong> ${teacher.experience} years
-      </p>
-
-      <p ><strong> ✉️ Email:
-      </strong> ${teacher.email}
-      </p>
-
-      <p><strong> 📞 Phone:
-      </strong> ${teacher.phone}
-      </p>
-
-      <p class="status ${teacher.status.toLowerCase()}">
-        ${teacher.status}
-      </p>
-    </div>
-  `)
-    .join("");
-
-    function searchTeacher() {
-    let searchTerm = document.querySelector('.search-input').value.toLowerCase();
-    let teacherContainer = document.getElementById('teacherInfo');
-    teacherContainer.innerHTML = '';
-    teachers.forEach(teacher => {
-        if (teacher.name.toLowerCase().includes(searchTerm) ||
-            teacher.id.toLowerCase().includes(searchTerm) ||
-            teacher.subject.toLowerCase().includes(searchTerm)) {
-            teacherContainer.innerHTML += `
-                <div class="teacher-card">
-                  <h3 class="teacher-name"> 🧑‍🏫 ${teacher.name}</h3>
-
-                  <p class="teacher-id">
-                  <strong> 🆔 ID:</strong> ${teacher.id}
-                  </p>
-
-                  <strong> 📚 Subject: 
-                  </strong><p class="teacher-subject"> ${teacher.subject}
-                  </p>
-
-                  <p class="detail-label">
-                  <strong> 👥 Cohort:</strong> ${teacher.cohort}
-                  </p>
-
-                  <p><strong> ⏳ Experience:
-                  </strong> ${teacher.experience} years
-                  </p>
-
-                  <p ><strong> ✉️ Email:
-                  </strong> ${teacher.email}
-                  </p>
-
-                  <p><strong> 📞 Phone:
-                  </strong> ${teacher.phone}
-                  </p>
-
-                  <p class="status ${teacher.status.toLowerCase()}">
-                    ${teacher.status}
-                  </p>
-                </div>
-              `;
-        }
-    });
-}
-
-// Get filter elements
-const programFilter = document.getElementById('programFilter');
-const statusFilter = document.getElementById('statusFilter');
-const cohortFilter = document.getElementById('cohortFilter');
-const teacherContainer = document.getElementById('teacherInfo');
-const clearBtn = document.querySelector('.btn-secondary');
-
-// Normalize helper (prevents casing issues)
-const normalize = value => value.toLowerCase().trim();
-
-// Render teachers
-function renderTeachers(list) {
-    if (list.length === 0) {
-        teacherContainer.innerHTML = `<p>No teachers match the selected filters.</p>`;
-        return;
-    }
-
-    teacherContainer.innerHTML = list.map(teacher => `
-        <div class="teacher-card">
-            <h3 class="teacher-name">🧑‍🏫 ${teacher.name}</h3>
-
-            <p>🆔 <strong>ID:</strong> ${teacher.id}</p>
-            <p>📚 <strong>Subject:</strong> ${teacher.subject}</p>
-            <p>👥 <strong>Cohort:</strong> ${teacher.cohort}</p>
-            <p>⏳ <strong>Experience:</strong> ${teacher.experience} years</p>
-            <p>✉️ <strong>Email:</strong> ${teacher.email}</p>
-            <p>📞 <strong>Phone:</strong> ${teacher.phone}</p>
-
-            <p class="status ${teacher.status.toLowerCase()}">
-                ${teacher.status === "Active" ? "🟢" : "🔴"} ${teacher.status}
-            </p>
-        </div>
-    `).join('');
-}
-
-function searchStudent() {
-    let searchTerm = document.querySelector('.search-input').value.toLowerCase();
-    let studentContainer = document.getElementById('table-roll');
-    studentContainer.innerHTML = '';
-    students.forEach(pupil => {
-        if (pupil.name.toLowerCase().includes(searchTerm) ||
-            pupil.cohort.toLowerCase().includes(searchTerm) ||
-            pupil.program.toLowerCase().includes(searchTerm)) {
-            studentContainer.innerHTML += `
-                <tr>
-                    <td>${pupil.name}</td>
-                    <td>${pupil.cohort}</td>
-                    <td>${pupil.program}</td>
-                    <td>${pupil.status}</td>
-                    <td><button onclick="deleteStudent(${pupil.id})">🗑️</button></td>
-                </tr>
-            `;
-        }
-    });
-}
-
-function addTeacher() {
-    document.getElementById('main').style.display = 'block';
-    main.style.display = 'flex';
-    document.getElementById('teacherInfo').style.display = 'none';
-};
-
-function formDetail() {
-    const name = document.getElementById('name').value;
-    const identity = document.getElementById('identity').value;
-    const course = document.getElementById('course').value;
-    const cohort = document.getElementById('cohort').value;
-    const experience = document.getElementById('experience').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const status = document.getElementById('status').value;
-
-    const newTeacher = {
-        id: identity,
-        name,
-        subject: course,
-        cohort,
-        experience,
-        email,
-        phone,
-        status
-    };
-
-    let storedTeachers = JSON.parse(localStorage.getItem('teachers')) || [];
-
-    storedTeachers.push(newTeacher);
-
-    localStorage.setItem('teachers', JSON.stringify(storedTeachers));
-
-    renderTeachers(storedTeachers);
-
-    Swal.fire({
-        title: 'Success!',
-        text: 'Teacher added successfully.',
-        icon: 'success',
-        confirmButtonText: 'OK'
+        teachers.push({ id: docSnap.id, ...data });
     });
 
-    // Optional: clear the form
-    document.getElementById('newStudentInfo').reset();
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-    const storedTeachers = JSON.parse(localStorage.getItem('teachers')) || [];
-    if (storedTeachers.length > 0) {
-        renderTeachers(storedTeachers);
-        teachers = storedTeachers;
-    }
-});
-
-
-
-
-
-function removeSec() {
-    document.getElementById('main').style.display = 'none';
-    document.getElementById('teacherInfo').style.display = 'grid';
-}
-
-// Apply filters
-function applyFilters() {
-    const programValue = normalize(programFilter.value);
-    const statusValue = normalize(statusFilter.value);
-    const cohortValue = normalize(cohortFilter.value);
-
-    const filteredTeachers = teachers.filter(teacher => {
-        return (
-            (programValue === "" || normalize(teacher.subject) === programValue) &&
-            (statusValue === "" || normalize(teacher.status) === statusValue) &&
-            (cohortValue === "" || normalize(teacher.cohort) === cohortValue)
-        );
-    });
-
-    renderTeachers(filteredTeachers);
-}
-
-// Clear filters
-function clearFilters() {
-    programFilter.value = "";
-    statusFilter.value = "";
-    cohortFilter.value = "";
     applyFilters();
 }
 
-// Event listeners
-programFilter.addEventListener('change', applyFilters);
-statusFilter.addEventListener('change', applyFilters);
-cohortFilter.addEventListener('change', applyFilters);
-clearBtn.addEventListener('click', clearFilters);
+/* 🔍 SEARCH */
+function searchTeacher() {
+    searchValue = document.querySelector(".search-input").value.toLowerCase();
+    applyFilters();
+}
 
-// Initial render
-applyFilters();
+/* 🎯 FILTER + RENDER */
+function applyFilters() {
+    const program = normalize(programFilter.value);
+    const status = normalize(statusFilter.value);
+    const cohort = normalize(cohortFilter.value);
 
+    const filtered = teachers.filter(t => {
+        return (
+            (program === "" || normalize(t.course) === program) &&
+            (status === "" || normalize(t.status) === status) &&
+            (cohort === "" || normalize(t.cohort) === cohort) &&
+            (
+                normalize(t.name).includes(searchValue) ||
+                normalize(t.identity).includes(searchValue) ||
+                normalize(t.course).includes(searchValue)
+            )
+        );
+    });
 
+    renderTeachers(filtered);
+}
+
+/* 🎨 RENDER */
+function renderTeachers(list) {
+    if (!list.length) {
+        teacherContainer.innerHTML = "<p>No teachers found.</p>";
+        return;
+    }
+
+    teacherContainer.innerHTML = list.map(t => `
+        <div class="teacher-card">
+            <h3 class="teacher-name">🧑‍🏫 ${t.name}</h3>
+            <p><strong>ID:</strong> ${t.id}</p>
+            <p><strong>Subject:</strong> ${t.course}</p>
+            <p><strong>Cohort:</strong> ${t.cohort}</p>
+            <p><strong>Experience:</strong> ${t.experience} years</p>
+            <p><strong>Email:</strong> ${t.email}</p>
+            <p><strong>Phone:</strong> ${t.phone}</p>
+            <p class="status ${normalize(t.status)}">${t.status}</p>
+        </div>
+    `).join("");
+}
+
+/* ➕ ADD TEACHER */
+async function formDetail() {
+    const teacher = {
+        role: "teacher",
+        name: document.getElementById("name").value,
+        identity: document.getElementById("identity").value,
+        course: document.getElementById("course").value,
+        cohort: document.getElementById("cohort").value,
+        experience: document.getElementById("experience").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        status: document.getElementById("status").value,
+        createdAt: new Date()
+    };
+
+    await addDoc(collection(db, "users"), teacher);
+
+    Swal.fire("Success", "Teacher added", "success");
+    document.getElementById("newStudentInfo").reset();
+    removeSec();
+    loadTeachers();
+}
+
+/* UI helpers */
+function addTeacher() {
+    main.style.display = "flex";
+    teacherContainer.style.display = "none";
+}
+
+function removeSec() {
+    main.style.display = "none";
+    teacherContainer.style.display = "grid";
+}
+
+/* Expose to HTML */
+window.searchTeacher = searchTeacher;
+window.addTeacher = addTeacher;
+window.removeSec = removeSec;
+window.formDetail = formDetail;
+window.dashBord = dashBord;
+window.studentPage = studentPage;
+window.teacherPage = teacherPage;
+
+/* Init */
+window.addEventListener("DOMContentLoaded", loadTeachers);

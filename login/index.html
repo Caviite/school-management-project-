@@ -378,7 +378,7 @@
                 // 2️⃣ Get Firestore user data
                 const userDoc = await getDoc(doc(db, "users", uid));
                 if (!userDoc.exists()) {
-                    throw new Error("User info not found in Firestore");
+                    throw new Error("User info alredy in use");
                 }
 
                 const data = userDoc.data();

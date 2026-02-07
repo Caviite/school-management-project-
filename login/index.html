@@ -400,7 +400,7 @@
             } catch (error) {
                 hideLoader();
                 console.error("Login Error Object:", error);
-                Swal.fire('Login Failed', error.code + ": " + error.message, 'error');
+              Swal.fire('Login Failed', 'Incorrect Password or Email', 'error');
             }
 
         };

@@ -196,6 +196,67 @@ body {
     color: var(--text-dark);
 }
 
+/* Hide profile content initially */
+#profileContent {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#profileContent.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+.ring-loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.ring-loader.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.ring-loader::before {
+    content: "";
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(#6a11cb, #2575fc, #6a11cb);
+    animation: spin 1s linear infinite;
+}
+
+.ring-loader::after {
+    content: "";
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    background: white;
+    border-radius: 50%;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+
 /* Responsive adjustments */
 /* --- Responsive Adjustments --- */
 

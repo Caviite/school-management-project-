@@ -15,6 +15,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const loader = document.getElementById("loader");
+const profileContent = document.getElementById("profileContent");
+
+function showLoader() {
+    loader.classList.add("active");
+    profileContent.classList.remove("visible");
+}
+
+function hideLoader() {
+    loader.classList.remove("active");
+}
+
+
 async function loadStudentInfo(email) {
     try {
         const normalizedEmail = email.toLowerCase().trim();
@@ -25,18 +38,23 @@ async function loadStudentInfo(email) {
 
         if (querySnapshot.empty) {
             console.warn("Student not found!");
+            hideLoader();
             return;
         }
 
         const studentData = querySnapshot.docs[0].data();
         displayStudentInfo(studentData);
+        hideLoader();
+        profileContent.classList.add("visible");
 
     } catch (error) {
+        hideLoader();
         console.error("Error fetching student info:", error);
     }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    showLoader();
     const auth = getAuth();
 
     onAuthStateChanged(auth, (user) => {
@@ -44,6 +62,7 @@ window.addEventListener("DOMContentLoaded", () => {
             // User is logged in, get their email from Firebase Auth
             loadStudentInfo(user.email);
         } else {
+            hideLoader();
             // No user is signed in
             alert("No logged-in student found. Please login again.");
             window.location.href = "../login/index.html";

@@ -19,17 +19,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);    
 
-// 4️⃣ Wait for DOM
-// window.addEventListener("DOMContentLoaded", () => {
-//     const email = localStorage.getItem("loggedInEmail");
+function showLoader() {
+    document.getElementById("loader").classList.add("active");
+}
 
-//     if (!email) {
-//         window.location.href = "../../login/index.html";
-//         return;
-//     }
-
-//     loadTeacherProfile(email);
-// });
+function hideLoader() {
+    document.getElementById("loader").classList.remove("active");
+}
+showLoader();
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -39,12 +36,14 @@ onAuthStateChanged(auth, async (user) => {
         const data = snap.data()
         loadTeacherProfile(data.email);
     } else {
+        hideLoader();
         window.location.href = "../../login/index.html";
     }
 })
 
 // 5️⃣ Load teacher from Firestore
 async function loadTeacherProfile(email) {
+    showLoader();
     try {
         const q = query(
             collection(db, "users"),
@@ -55,10 +54,12 @@ async function loadTeacherProfile(email) {
 
         if (snapshot.empty) {
             alert("Teacher profile not found");
+            hideLoader();
             return;
         }
 
         const teacher = snapshot.docs[0].data();
+        hideLoader();
 
         // 🔐 Safety: ensure role
         if (teacher.role !== "teacher") {
@@ -69,6 +70,7 @@ async function loadTeacherProfile(email) {
         displayTeacherData(teacher);
 
     } catch (err) {
+        hideLoader();
         console.error("Error loading teacher profile:", err);
     }
 }

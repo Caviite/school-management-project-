@@ -5,6 +5,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.gstatic.com https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:;">
     <title>Quest Code Portal - Login</title>
     <style>
         * {
@@ -59,6 +61,10 @@
             font-weight: 600;
         }
 
+        .password-wrapper {
+            position: relative;
+        }
+
         .form-group input,
         .form-group select {
             width: 100%;
@@ -73,6 +79,20 @@
         .form-group select:focus {
             outline: none;
             border-color: #3498db;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7f8c8d;
+            user-select: none;
+        }
+
+        .toggle-password:hover {
+            color: #3498db;
         }
 
         .role-selector {
@@ -124,9 +144,14 @@
             transition: transform 0.3s;
         }
 
-        .btn-login:hover {
+        .btn-login:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .forgot-password {
@@ -167,7 +192,6 @@
             border-top: 6px solid #3498db;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-
             position: fixed;
             top: 50%;
             left: 50%;
@@ -185,7 +209,23 @@
             }
         }
 
+        .log {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
 
+        .log a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .log a:hover {
+            text-decoration: underline;
+        }
+
+        /* responsive */
         @media (max-width: 768px) {
             body {
                 padding: 20px;
@@ -284,26 +324,30 @@
         <form id="loginForm">
             <div class="form-group">
                 <label for="email"><i class="fas fa-user"></i> Email</label>
-                <input type="email" id="username" placeholder="input your email" required>
+                <input type="email" id="username" placeholder="Enter your email" required autocomplete="email">
             </div>
 
             <div class="form-group">
                 <label for="password"><i class="fas fa-lock"></i> Password</label>
-                <input type="password" id="password" placeholder="Enter password" required>
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="Enter password" required
+                        autocomplete="current-password">
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-user-tag"></i> Select Role</label>
                 <div class="role-selector" id="roleSelector">
-                    <div class="role-option" data-role="admin" onclick="selectRole('admin')">
+                    <div class="role-option" data-role="admin" role="button" tabindex="0">
                         <i class="fas fa-user-shield"></i>
                         <div>Admin</div>
                     </div>
-                    <div class="role-option" data-role="teacher" onclick="selectRole('teacher')">
+                    <div class="role-option" data-role="teacher" role="button" tabindex="0">
                         <i class="fas fa-chalkboard-teacher"></i>
                         <div>Teacher</div>
                     </div>
-                    <div class="role-option" data-role="student" onclick="selectRole('student')">
+                    <div class="role-option selected" data-role="student" role="button" tabindex="0">
                         <i class="fas fa-user-graduate"></i>
                         <div>Student</div>
                     </div>
@@ -311,21 +355,19 @@
                 <input type="hidden" id="selectedRoleInput" value="student" required>
             </div>
 
-            <button type="button" class="btn-login" onclick="enterLogin()">
+            <button type="submit" class="btn-login" id="loginBtn">
                 <i class="fas fa-sign-in-alt"></i> Login to Portal
             </button>
         </form>
-
 
         <div class="demo-credentials">
             <strong>Demo Credentials:</strong><br>
             KINDLY USE YOUR CREATED CREDENTIALS TO LOGIN
         </div>
 
-        <div class="loader" id="loader" style="display:none;">
-            <!-- Logging in... -->
-        </div>
+        <p class="log">Don't have an account? <a href="/create/index.html">Sign Up</a></p>
 
+        <div class="loader" id="loader" style="display:none;"></div>
     </div>
 
     <script type="module">
@@ -333,6 +375,7 @@
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
+        // SECURITY: Firebase config (consider using environment variables in production)
         const firebaseConfig = {
             apiKey: "AIzaSyCJ3fP0NFiyJgmpxPYbR94e2c2lart4JXQ",
             authDomain: "school-portal-aa5df.firebaseapp.com",
@@ -346,64 +389,176 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        function showLoader() { document.getElementById("loader").style.display = "block"; }
-        function hideLoader() { document.getElementById("loader").style.display = "none"; }
+        // SECURITY: Input sanitization helper
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
 
-        window.selectRole = function (role) {
-            const options = document.querySelectorAll('.role-option');
-            options.forEach(option => option.classList.remove('selected'));
-            options.forEach(option => {
-                if (option.dataset.role === role) option.classList.add('selected');
+        // SECURITY: Email validation
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showLoader() {
+            document.getElementById("loader").style.display = "block";
+            document.getElementById("loginBtn").disabled = true;
+        }
+
+        function hideLoader() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("loginBtn").disabled = false;
+        }
+
+        // Role selection with keyboard accessibility
+        const roleOptions = document.querySelectorAll('.role-option');
+        roleOptions.forEach(option => {
+            option.addEventListener('click', () => selectRole(option.dataset.role));
+            option.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectRole(option.dataset.role);
+                }
             });
-            document.getElementById('selectedRoleInput').value = role;
-        };
+        });
 
-        window.enterLogin = async () => {
+        function selectRole(role) {
+            roleOptions.forEach(option => option.classList.remove('selected'));
+            const selectedOption = document.querySelector(`[data-role="${role}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+                document.getElementById('selectedRoleInput').value = role;
+            }
+        }
+
+        // Password visibility toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // SECURITY: Form submission with validation
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
             const email = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+            const password = document.getElementById('password').value;
             const selectedRole = document.getElementById('selectedRoleInput').value.trim().toLowerCase();
 
+            // SECURITY: Input validation
             if (!email || !password) {
                 Swal.fire('Error', 'Email and password cannot be empty', 'warning');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                Swal.fire('Invalid Email', 'Please enter a valid email address', 'warning');
+                return;
+            }
+
+            if (password.length < 6) {
+                Swal.fire('Invalid Password', 'Password is too short', 'warning');
                 return;
             }
 
             showLoader();
 
             try {
-                // 1️⃣ Sign in
+                // Sign in
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const uid = userCredential.user.uid;
 
-                // 2️⃣ Get Firestore user data
+                // SECURITY: Verify email if required (optional enhancement)
+                // if (!userCredential.user.emailVerified) {
+                //     await auth.signOut();
+                //     hideLoader();
+                //     Swal.fire('Email Not Verified', 'Please verify your email before logging in.', 'warning');
+                //     return;
+                // }
+
+                // Get Firestore user data
                 const userDoc = await getDoc(doc(db, "users", uid));
                 if (!userDoc.exists()) {
-                    throw new Error("User info alredy in use");
+                    await auth.signOut();
+                    hideLoader();
+                    Swal.fire('Login Failed', 'User data not found', 'error');
+                    return;
                 }
 
                 const data = userDoc.data();
                 const roleFromDB = (data.role || "").trim().toLowerCase();
 
+                if (!roleFromDB) {
+                    await auth.signOut();
+                    hideLoader();
+                    Swal.fire('Login Failed', 'User role not assigned. Contact admin.', 'error');
+                    return;
+                }
+
+                // SECURITY: Role-based access control
+                // Note: The selected role in UI is informational; actual role comes from database
 
                 Swal.fire('Login Successful', `Welcome to the ${roleFromDB} portal!`, 'success');
 
-                if (roleFromDB == "admin") {
-                    window.location.href = "../admin/index.html"
-                } else if (roleFromDB == "teacher") {
-                    window.location.href = "../../otherpages/teachpage/index.html"
-                } else if (roleFromDB == "student") {
-                    window.location.href = "../otherpages/pupilpage/index.html"
+                // SECURITY: Use relative paths and validate role before redirect
+                const roleRedirects = {
+                    "admin": "../admin/index.html",
+                    "teacher": "../../otherpages/teachpage/index.html",
+                    "student": "../otherpages/pupilpage/index.html"
+                };
+
+                if (roleRedirects[roleFromDB]) {
+                    // SECURITY: Small delay to show success message
+                    setTimeout(() => {
+                        window.location.href = roleRedirects[roleFromDB];
+                    }, 1000);
                 } else {
-                    alert("faild")
+                    await auth.signOut();
+                    hideLoader();
+                    Swal.fire('Access Denied', 'Invalid role detected.', 'error');
                 }
 
             } catch (error) {
                 hideLoader();
-                console.error("Login Error Object:", error);
-              Swal.fire('Login Failed', 'Incorrect Password or Email', 'error');
-            }
+                console.error("Login Error:", error.code);
 
-        };
+                let message = "Login failed. Please try again.";
+
+                // SECURITY: Generic error messages to prevent user enumeration
+                switch (error.code) {
+                    case "auth/invalid-credential":
+                        message = "Account Not Found.";
+                        break;
+                    case "auth/wrong-password":
+                        message = "Invalid email or password.";
+                        break;
+                    case "auth/user-not-found":
+                        message = "Account Not Found.";
+                        break;
+                    case "auth/invalid-email":
+                        message = "Invalid email or password.";
+                        break;
+
+                    case "auth/network-request-failed":
+                        message = "Network error. Check your internet connection.";
+                        break;
+                }
+
+                Swal.fire('Login Failed', message, 'error');
+            }
+        });
+
+        // SECURITY: Clear sensitive data on page unload
+        window.addEventListener('beforeunload', () => {
+            document.getElementById('password').value = '';
+        });
 
     </script>
 

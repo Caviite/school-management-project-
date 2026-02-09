@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.gstatic.com https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:;">
+    <title>Welcome to Quest Code Institute | Create Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #095199;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        /* ROLE SELECT */
+        .role-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .role-card {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #ddd;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .role-card:hover {
+            border-color: #3498db;
+            background: #f0f8ff;
+        }
+
+        .role-card.active {
+            background: #ecf5ff;
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        /* SECTIONS */
+        .section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        .log {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+
+        .log a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .log a:hover {
+            text-decoration: underline;
+        }
+
+        .input-error {
+            border-color: #e74c3c !important;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* RESPONSIVE MEDIA QUERIES */
+        @media (max-width: 992px) {
+            .container {
+                padding: 30px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            input,
+            select {
+                font-size: 13px;
+            }
+
+            button {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            .role-selector {
+                flex-direction: column;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            input,
+            select {
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1><i class="fas fa-school"></i> Quest Code Institute</h1>
+        <p>Create Account</p>
+
+        <!-- LOGIN INFO -->
+        <div class="form-group">
+            <label class="required-field">Email</label>
+            <input type="email" required id="emailInput" autocomplete="email">
+            <div class="error-message" id="emailError">Please enter a valid email address</div>
+        </div>
+
+        <div class="form-group">
+            <label class="required-field">Password</label>
+            <div class="password-wrapper">
+                <input type="password" required id="passwordInput" autocomplete="new-password">
+                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="required-field">Confirm Password</label>
+            <div class="password-wrapper">
+                <input type="password" required id="confirmPasswordInput" autocomplete="new-password">
+                <i class="fas fa-eye toggle-password" id="toggleConfirmPassword"></i>
+            </div>
+            <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+        </div>
+
+        <!-- ROLE SELECT -->
+        <div class="form-group">
+            <label class="required-field">Select Role</label>
+            <div class="role-selector">
+                <div class="role-card" data-role="student">Student</div>
+                <div class="role-card" data-role="teacher">Teacher</div>
+            </div>
+        </div>
+
+        <!-- STUDENT FORM -->
+        <div class="section" id="studentSection">
+            <h3>Student Information</h3>
+            <div class="grid">
+                <div class="form-group">
+                    <label class="required-field">Full Name</label>
+                    <input type="text" id="studentName" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Date of Birth</label>
+                    <input type="date" id="studentDOB" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Gender</label>
+                    <select id="studentGender" required>
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Cohort</label>
+                    <input type="number" id="studentCohort" value="2026" min="2020" max="2030" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Nationality</label>
+                    <input type="text" id="studentNationality" value="Nigerian" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Phone</label>
+                    <input type="tel" id="studentPhone" pattern="[0-9+\-\s()]+" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Address</label>
+                    <input type="text" id="studentAddress" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Course</label>
+                    <select id="studentCourse" required>
+                        <option value="">Select Course</option>
+                        <option>Full stack Web Development</option>
+                        <option>Data Science</option>
+                        <option>DevOps Engineering</option>
+                        <option>Mobile Development</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Guardian Name</label>
+                    <input type="text" id="studentGuardian" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEACHER FORM -->
+        <div class="section" id="teacherSection">
+            <h3>Teacher Information</h3>
+            <div class="grid">
+                <div class="form-group">
+                    <label class="required-field">Full Name</label>
+                    <input type="text" id="teacherName" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Course</label>
+                    <select id="teacherCourse" required>
+                        <option value="">Select Course</option>
+                        <option>Full stack Web Development</option>
+                        <option>Data Science</option>
+                        <option>DevOps Engineering</option>
+                        <option>Mobile Development</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Cohort</label>
+                    <input type="number" id="teacherCohort" value="2026" min="2020" max="2030" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Years of Experience</label>
+                    <input type="number" id="teacherExperience" min="0" max="50" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Phone</label>
+                    <input type="tel" id="teacherPhone" pattern="[0-9+\-\s()]+" required>
+                </div>
+                <div class="form-group">
+                    <label class="required-field">Status</label>
+                    <select id="teacherStatus" required>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button id="createAccountBtn">Create Account</button>
+
+        <p class="log">Already have an account? <a href="/login/index.html">Sign in</a></p>
+    </div>
+
+    <!-- LOADER -->
+    <div id="loader" style="
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 6px solid #ddd;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    z-index: 9999;
+    animation: spin 1s linear infinite;
+"></div>
+
+    <!-- FIREBASE MODULE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+        // SECURITY: Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJ3fP0NFiyJgmpxPYbR94e2c2lart4JXQ",
+            authDomain: "school-portal-aa5df.firebaseapp.com",
+            projectId: "school-portal-aa5df",
+            storageBucket: "school-portal-aa5df.firebasestorage.app",
+            messagingSenderId: "1059672065367",
+            appId: "1:1059672065367:web:5a2afaf6256a8056112a12"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const loader = document.getElementById("loader");
+        const studentSection = document.getElementById("studentSection");
+        const teacherSection = document.getElementById("teacherSection");
+        let selectedRole = "";
+
+        // SECURITY: Input sanitization
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
+
+        // SECURITY: Email validation
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // SECURITY: Phone validation
+        function isValidPhone(phone) {
+            const phoneRegex = /^[0-9+\-\s()]+$/;
+            return phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= 10;
+        }
+
+        // Password strength checker (only called on button click)
+        function checkPasswordStrength(password) {
+            const requirements = {
+                length: password.length >= 8,
+                letter: /[a-zA-Z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+
+            return Object.values(requirements).every(val => val);
+        }
+
+        // Confirm password validation (only visual feedback on input)
+        const passwordInput = document.getElementById('passwordInput');
+        const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+        confirmPasswordInput.addEventListener('input', () => {
+            if (confirmPasswordInput.value && confirmPasswordInput.value !== passwordInput.value) {
+                confirmPasswordInput.classList.add('input-error');
+                confirmPasswordError.style.display = 'block';
+            } else {
+                confirmPasswordInput.classList.remove('input-error');
+                confirmPasswordError.style.display = 'none';
+            }
+        });
+
+        // Email validation (only visual feedback on blur)
+        const emailInput = document.getElementById('emailInput');
+        const emailError = document.getElementById('emailError');
+
+        emailInput.addEventListener('blur', () => {
+            if (emailInput.value && !isValidEmail(emailInput.value)) {
+                emailInput.classList.add('input-error');
+                emailError.style.display = 'block';
+            } else {
+                emailInput.classList.remove('input-error');
+                emailError.style.display = 'none';
+            }
+        });
+
+        // Password visibility toggles
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+            const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
+            confirmPasswordInput.type = type;
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // ROLE TOGGLE
+        const roleCards = document.querySelectorAll(".role-card");
+
+        roleCards.forEach(card => {
+            card.addEventListener("click", () => {
+                roleCards.forEach(c => c.classList.remove("active"));
+                card.classList.add("active");
+                selectedRole = card.dataset.role.toLowerCase();
+
+                // Toggle sections
+                if (selectedRole === "student") {
+                    studentSection.style.display = "block";
+                    teacherSection.style.display = "none";
+                } else {
+                    teacherSection.style.display = "block";
+                    studentSection.style.display = "none";
+                }
+            });
+        });
+
+        // SECURITY: Validate all fields in a section
+        function validateFields(section) {
+            const inputs = section.querySelectorAll("input[required], select[required]");
+            for (let input of inputs) {
+                if (!input.value || input.value.trim() === "") {
+                    return false;
+                }
+                // Additional phone validation
+                if (input.type === 'tel' && !isValidPhone(input.value)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function showLoader() {
+            loader.style.display = "block";
+            document.getElementById('createAccountBtn').disabled = true;
+        }
+
+        function hideLoader() {
+            loader.style.display = "none";
+            document.getElementById('createAccountBtn').disabled = false;
+        }
+
+        // CREATE ACCOUNT BUTTON
+        const createBtn = document.getElementById("createAccountBtn");
+        createBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            // SECURITY: Comprehensive validation (ALL DONE ON BUTTON CLICK)
+            if (!email || !password) {
+                Swal.fire("Required Fields", "Please fill out all required fields", "warning");
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                Swal.fire("Invalid Email", "Please enter a valid email address", "warning");
+                emailInput.focus();
+                return;
+            }
+
+            // PASSWORD VALIDATION - Only checked when button is clicked
+            if (!checkPasswordStrength(password)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Weak Password",
+                    html: `
+                        Password must meet the following requirements:<br>
+                        • At least 8 characters<br>
+                        • Contains letters (a-z, A-Z)<br>
+                        • Contains numbers (0-9)<br>
+                        • Contains special characters (!@#$%^&*...)
+                    `,
+                    confirmButtonText: "OK"
+                });
+                passwordInput.focus();
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                Swal.fire("Password Mismatch", "Passwords do not match", "error");
+                confirmPasswordInput.focus();
+                return;
+            }
+
+            if (!selectedRole) {
+                Swal.fire("Role Required", "Please select Student or Teacher", "warning");
+                return;
+            }
+
+            let userData = {
+                email,
+                role: selectedRole,
+                createdAt: serverTimestamp(),
+                emailVerified: false
+            };
+
+            // SECURITY: Collect and validate role-specific data
+            if (selectedRole === "student") {
+                if (!validateFields(studentSection)) {
+                    Swal.fire("Incomplete Information", "Please fill in all required student fields", "warning");
+                    return;
+                }
+
+                userData.name = sanitizeInput(document.getElementById('studentName').value.trim());
+                userData.dob = document.getElementById('studentDOB').value;
+                userData.gender = document.getElementById('studentGender').value;
+                userData.cohort = parseInt(document.getElementById('studentCohort').value);
+                userData.nationality = sanitizeInput(document.getElementById('studentNationality').value.trim());
+                userData.phone = document.getElementById('studentPhone').value.trim();
+                userData.address = sanitizeInput(document.getElementById('studentAddress').value.trim());
+                userData.course = document.getElementById('studentCourse').value;
+                userData.guardian = sanitizeInput(document.getElementById('studentGuardian').value.trim());
+
+                // SECURITY: Phone validation
+                if (!isValidPhone(userData.phone)) {
+                    Swal.fire("Invalid Phone", "Please enter a valid phone number", "warning");
+                    return;
+                }
+
+            } else if (selectedRole === "teacher") {
+                if (!validateFields(teacherSection)) {
+                    Swal.fire("Incomplete Information", "Please fill in all required teacher fields", "warning");
+                    return;
+                }
+
+                userData.name = sanitizeInput(document.getElementById('teacherName').value.trim());
+                userData.course = document.getElementById('teacherCourse').value;
+                userData.cohort = parseInt(document.getElementById('teacherCohort').value);
+                userData.experience = parseInt(document.getElementById('teacherExperience').value);
+                userData.phone = document.getElementById('teacherPhone').value.trim();
+                userData.status = document.getElementById('teacherStatus').value;
+
+                // SECURITY: Phone validation
+                if (!isValidPhone(userData.phone)) {
+                    Swal.fire("Invalid Phone", "Please enter a valid phone number", "warning");
+                    return;
+                }
+            }
+
+            try {
+                showLoader();
+
+                // CREATE USER IN FIREBASE AUTH
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const uid = userCredential.user.uid;
+
+                // SECURITY: Send email verification (optional but recommended)
+                // await sendEmailVerification(userCredential.user);
+
+                // SAVE ADDITIONAL INFO TO FIRESTORE
+                await setDoc(doc(db, "users", uid), userData);
+
+                hideLoader();
+
+                // SUCCESS ALERT
+                Swal.fire({
+                    icon: "success",
+                    title: "Account Created! 🎉",
+                    text: "Your account has been created successfully!",
+                    confirmButtonText: "Go to Login"
+                }).then(() => {
+                    // SECURITY: Clear form before redirect
+                    passwordInput.value = '';
+                    confirmPasswordInput.value = '';
+                    window.location.href = "././login/index.html";
+                });
+
+            } catch (error) {
+                hideLoader();
+                console.error("Registration Error:", error.code);
+
+                let message = "Registration failed. Please try again.";
+
+                switch (error.code) {
+                    case "auth/email-already-in-use":
+                        message = "This email is already registered. Please login instead.";
+                        break;
+                    case "auth/invalid-email":
+                        message = "Invalid email address.";
+                        break;
+                    case "auth/weak-password":
+                        message = "Password is too weak. Please use a stronger password.";
+                        break;
+                    case "auth/network-request-failed":
+                        message = "Network error. Please check your internet connection.";
+                        break;
+                }
+
+                Swal.fire("Registration Error", message, "error");
+            }
+        });
+
+        // SECURITY: Clear password fields on page unload
+        window.addEventListener('beforeunload', () => {
+            passwordInput.value = '';
+            confirmPasswordInput.value = '';
+        });
+
+    </script>
+
+</body>
+
+</html>
